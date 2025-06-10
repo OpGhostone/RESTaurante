@@ -25,7 +25,7 @@ SECRET=uma_senha_bem_secreta
 ```
 
 <p>Para conseguir sua URL para se conectar ao banco de dados:</p>
-<iframe width="560" height="315" src="https://www.youtube.com/embed/SMXbGrKe5gM" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+https://www.youtube.com/embed/SMXbGrKe5gM
 
 <p>Para rodar:</p>
 
