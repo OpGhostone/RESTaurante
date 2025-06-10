@@ -1,7 +1,7 @@
 {
   "name": "restaurante",
   "version": "1.0.0",
-  "description": "anotar isso depois: https://github.com/wms2537/nodejs-jwt-auth                     |___ repo com muitas features legais de autenticação que posso implementar",
+  "description": "auth api with jwt",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
