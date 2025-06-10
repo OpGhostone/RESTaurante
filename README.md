@@ -11,8 +11,8 @@ Esta API fornece endpoints para registro, login, e gerenciamento de usuários vi
 ## Instalação
 
 ```bash
-git clone <repo>
-cd <repo>
+git clone https://github.com/opghostone/restaurante
+cd restaurante
 npm install
 ```
 
@@ -25,7 +25,7 @@ SECRET=uma_senha_bem_secreta
 ```
 
 <p>Para conseguir sua URL para se conectar ao banco de dados:</p>
-https://www.youtube.com/embed/SMXbGrKe5gM
+https://youtu.be/SMXbGrKe5gM
 
 <p>Para rodar:</p>
 
