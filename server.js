@@ -14,7 +14,8 @@ const PORT = process.env.PORT
 app.use(express.json())
 
 function authMiddleware(req, res, next) {
-    const token = req.header("Authorization")
+    let token = req.headers.cookie
+    token = token.split('=')[1]
     if (!token) return res.status(400).send("no token specified")
     try {
         req.user = jsonwebtoken.verify(token, process.env.SECRET)
@@ -59,37 +60,32 @@ app.post("/login", async (req, res) => {
     const user = await UserModel.findOne({email})
     if (!user || !password) return res.status(400).send("login error")
     if (!await bcrypt.compare(password, user.password)) return res.status(401).send("wrong password")
-    const payload = {_id: user._id, username: user.username, email: user.email}
+    const payload = {username: user.username, email: user.email}
     const token = jsonwebtoken.sign(payload, process.env.SECRET)
-    res.json({token})
+    res.cookie("token", token)
+    res.sendStatus(200)
 })
 
 // protected routes
 app.use(authMiddleware)
 
-app.get("/users/:id", async (req, res) => {
-    if (req.user._id != req.params.id) return res.sendStatus(401)
-    const id = req.params.id
-    const user = await UserModel.findById(id)
+app.get("/users/me", async (req, res) => {
+    const user = await UserModel.findOne({email:req.user.email})
     if (!user) return res.sendStatus(404)
     res.json({username: user.username, email: user.email, id: user._id})
 })
 
-app.delete("/users/:id", async (req, res) => {
-    if (req.user._id != req.params.id) return res.sendStatus(401)
-    const id = req.params.id
-    await UserModel.findByIdAndDelete(id)
+app.delete("/users/me", async (req, res) => {
+    await UserModel.findOneAndDelete({email:req.user.email})
     res.sendStatus(200)
 })
 
-app.patch("/users/:id", validateUser, async (req, res) => {
+app.patch("/users/me", validateUser, async (req, res) => {
     // update password
-    if (req.user._id != req.params.id) return res.sendStatus(401)
-    const id = req.params.id
     let password = req.body.password
     if (!password) return res.status(400).send("no password specified")
     password = await bcrypt.hash(password, 10)
-    await UserModel.findByIdAndUpdate(id, {password})
+    await UserModel.findOneAndUpdate({email:req.user.email}, {password})
     res.sendStatus(200)
 })
 
