@@ -1,15 +1,31 @@
 const express = require("express")
-const dontenv = require("dotenv")
+const dotenv = require("dotenv")
 const bcrypt = require("bcrypt")
 const jsonwebtoken = require("jsonwebtoken")
 const joi = require("joi")
+const cors = require("cors")
 const connectDatabase = require("./src/database/connect")
 const UserModel = require("./src/models/user.model")
 
-dontenv.config()
+dotenv.config()
 connectDatabase()
 const app = express()
 const PORT = process.env.PORT
+const allowedOrigins = [
+  process.env.FRONT_URL,
+  process.env.SPRING_URL
+];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true,
+}));
 
 app.use(express.json())
 
@@ -70,6 +86,7 @@ app.post("/login", async (req, res) => {
 app.use(authMiddleware)
 
 app.get("/users/me", async (req, res) => {
+    if (req.headers["x-api-key"] != process.env.API_KEY) return res.sendStatus(403)
     const user = await UserModel.findOne({email:req.user.email})
     if (!user) return res.sendStatus(404)
     res.json({username: user.username, email: user.email, id: user._id})
